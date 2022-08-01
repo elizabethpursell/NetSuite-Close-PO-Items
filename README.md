@@ -1,11 +1,11 @@
 # NetSuite-Close-PO-Items
 ## Project Overview
 ### Purpose
-This project closes individual line items on all purchase orders based on the received, billed, and on order quantities. It is a scheduled script that runs every weekday at 8am and sends out a summary email of all the changes made.
+This project automatically closes individual line items on all purchase orders based on the received, billed, and on order quantities. It is a scheduled script that runs every weekday at 8am and sends out a summary email of all the changes made.
 ### Features
 - Automated Emails
 - Setting Sublist Field Values
-- Arrays
+- Automatic Purchase Order Closure
 - Saved Searches
 ### Prerequisites
 - SuiteScript/JavaScript
