@@ -10,7 +10,7 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
         const closePO = [];
         poSearch.run().each(function(result){
             if(result != null && result != ''){
-                var quantityBilled = result.getValue({
+                var quantityBilled = result.getValue({          //gets quantities to check if it should be closed
                     name: "quantitybilled"
                 });
                 var quantityRec = result.getValue({
@@ -42,9 +42,9 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                 type: record.Type.PURCHASE_ORDER,
                 id: parseInt(closePO[index])
             });
-            var allClosed = true;       //boolean to track full PO closure
+            var allClosed = true;                                           //boolean to track full PO closure
             for (var i = 0; i < poRecord.getLineCount('item'); i++){        //execute for every item line in the PO
-                var quantityBilled = poRecord.getSublistValue({         //get PO item's quantities
+                var quantityBilled = poRecord.getSublistValue({             //get PO item's quantities
                     sublistId: 'item',
                     fieldId: 'quantitybilled',
                     line: i
@@ -65,7 +65,7 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                 	line: i
                 });
                 if(quantityBilled >= quantity && quantityRec >= quantity && isClosed == false && (quantity != "" || quantity != null) && (quantityBilled != "" || quantityBilled != null) && (quantityRec != "" || quantityRec != null)){     //execute if the item should be closed
-                    poRecord.setSublistValue({        //set item to closed
+                    poRecord.setSublistValue({              //set item to closed
                         sublistId: 'item',
                         fieldId: 'isclosed',
                         line: i,
@@ -134,20 +134,20 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                 }
             }
             if(fullClosed.length > 0){          //execute if POs were fully closed/billed
-                emailBody = emailBody + "<br><b>The Following Purchase Orders Have Been Fully Closed/Billed:</b><br>";
+                emailBody = emailBody + "<br><b>The Following Purchase Orders Have Been Fully Closed/Billed:</b><br>";      //create html string of all the POs and items that were fully billed/closed
                 for(var m = 0; m < fullClosed.length; m++){
                     var fullClosedPO = fullClosed[m].toString();
                     emailBody = emailBody + "- " + fullClosedPO + "<br>";
                 }
             }
         }
-      	email.send({            //send the email
-            author: 2655,		//internal ID of user
+      	email.send({                    //send the email
+            author: 2655,		        //internal ID of user
             recipients: "fakeemail.com",
             subject: "Daily PO Close Update",
             body: emailBody
         });
-      	log.error("Nummber of POs Changed", PONames.length);      //log the number of POs changed
+      	log.error("Number of POs Changed", PONames.length);      //log the number of POs changed
     }
     return {
         execute: execute
