@@ -143,7 +143,7 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
         }
       	email.send({            //send the email
             author: 2655,		//internal ID of user
-            recipients: "epursell@stuffedpuffs.com",
+            recipients: "fakeemail.com",
             subject: "Daily PO Close Update",
             body: emailBody
         });
