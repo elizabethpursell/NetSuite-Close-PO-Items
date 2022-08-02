@@ -104,7 +104,7 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
             }
           	poRecord.save(false, false);        //save changes to PO record
         }
-      	for(var i = 0; i < PONames.length; i++){		//clean data; remove blank item arrays
+      	for(var i = 0; i < allLines.length; i++){		//clean data; remove blank item arrays
         	if(allLines[i][0] == '' || allLines[i][0] == null){
               	allLines.splice(i, 1);
               	closePO.splice(i, 1);
