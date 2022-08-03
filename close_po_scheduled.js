@@ -104,13 +104,10 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
             }
           	poRecord.save(false, false);        //save changes to PO record
         }
-      	for(var i = 0; i < allLines.length; i++){		//clean data; remove blank item arrays
-        	if(allLines[i][0] == '' || allLines[i][0] == null){
-              	allLines.splice(i, 1);
-              	closePO.splice(i, 1);
-        	}
-        }
-      	log.error("Items", allLines);
+      	var items = allLines.filter(function(obj){		//clean data; remove blank item arrays
+          	return obj[0] !== undefined;
+        });
+      	log.error("Items", items);
       	log.error("Internal IDs", closePO);
         log.error("Changed POs", PONames);
         log.error("Fully Closed POs", fullClosed);
@@ -120,12 +117,12 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
         }
         else{               //execute if POs were changed
           	emailBody = "<b>The Following Purchase Order Items Have Been Closed:</b><br><br>";      //create html string of all the POs and items that were changed
-      	    for(var j = 0; j < allLines.length; j++){
+      	    for(var j = 0; j < items.length; j++){
                 var currentPO = PONames[j].toString();
                 emailBody = emailBody + "- " + "<b>" + currentPO + "</b>" + ": ";
-                for(var k = 0; k < allLines[j].length; k++){
-                  	var currentItem = allLines[j][k].toString();
-                    if(k == (allLines[j].length - 1)){
+                for(var k = 0; k < items[j].length; k++){
+                  	var currentItem = items[j][k].toString();
+                    if(k == (items[j].length - 1)){
                         emailBody = emailBody + currentItem + "<br>";
                     }
                     else{
