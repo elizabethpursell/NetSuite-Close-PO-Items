@@ -90,12 +90,12 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                     });
                   	allLines[index].push(lineItem);
                 }
-                var isClosed = poRecord.getSublistValue({
+                var closed = poRecord.getSublistValue({
                 	sublistId: "item",
                 	fieldId: "isclosed",
                 	line: i
                 });
-                if(isClosed == false){          //set boolean to false if not all items are closed
+                if(closed == false){          //set boolean to false if not all items are closed
                     allClosed = false;
                 }
             }
@@ -138,12 +138,30 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                 }
             }
         }
-      	email.send({            //send the email
-            author: 2690,		//internal ID of user
-            recipients: ["fakeemail"],
-            subject: "Daily PO Close Update",
-            body: emailBody
+      	var senderRecord = record.load({
+          	type: record.Type.EMPLOYEE,
+          	id: 2690			//internal id of user to try to send email from
         });
+      	var isInactive = senderRecord.getValue({
+          	fieldId: "isinactive"
+        });
+      	if(isInactive == true){
+          	emailBody = "The person who this email was originally sent to no longer has access to NetSuite<br><br>" + emailBody;
+          	email.send({            //send the email if user inactive
+              	author: -5,			//internal ID of user
+              	recipients: "troth@stuffedpuffs.com",
+              	subject: "Daily PO Close Update -- Error",
+              	body: emailBody
+            });
+        }
+      	else{
+          	email.send({            //send email if user active
+              	author: 2690,		//internal ID of user
+              	recipients: "ptitus@stuffedpuffs.com",
+              	subject: "Daily PO Close Update",
+              	body: emailBody
+            });
+        }
       	log.error("Number of POs Changed", PONames.length);      //log the number of POs changed
     }
     return {
