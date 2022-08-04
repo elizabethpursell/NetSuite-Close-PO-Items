@@ -10,7 +10,7 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
         const closePO = [];
         poSearch.run().each(function(result){
             if(result != null && result != ''){
-                var quantityBilled = result.getValue({          //gets quantities to check if it should be closed
+                var quantityBilled = result.getValue({
                     name: "quantitybilled"
                 });
                 var quantityRec = result.getValue({
@@ -42,9 +42,9 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                 type: record.Type.PURCHASE_ORDER,
                 id: parseInt(closePO[index])
             });
-            var allClosed = true;                                           //boolean to track full PO closure
+            var allClosed = true;       //boolean to track full PO closure
             for (var i = 0; i < poRecord.getLineCount('item'); i++){        //execute for every item line in the PO
-                var quantityBilled = poRecord.getSublistValue({             //get PO item's quantities
+                var quantityBilled = poRecord.getSublistValue({         //get PO item's quantities
                     sublistId: 'item',
                     fieldId: 'quantitybilled',
                     line: i
@@ -65,7 +65,7 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                 	line: i
                 });
                 if(quantityBilled >= quantity && quantityRec >= quantity && isClosed == false && (quantity != "" || quantity != null) && (quantityBilled != "" || quantityBilled != null) && (quantityRec != "" || quantityRec != null)){     //execute if the item should be closed
-                    poRecord.setSublistValue({              //set item to closed
+                    poRecord.setSublistValue({        //set item to closed
                         sublistId: 'item',
                         fieldId: 'isclosed',
                         line: i,
@@ -112,14 +112,14 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
         log.error("Changed POs", PONames);
         log.error("Fully Closed POs", fullClosed);
       	var emailBody = "";
-        if(closePO.length <= 0){            //execute if no POs were changed
+        if(PONames.length <= 0){            //execute if no POs were changed
             emailBody = "There have been no purchase order items closed today.";
         }
         else{               //execute if POs were changed
           	emailBody = "<b>The Following Purchase Order Items Have Been Closed:</b><br><br>";      //create html string of all the POs and items that were changed
       	    for(var j = 0; j < items.length; j++){
                 var currentPO = PONames[j].toString();
-                emailBody = emailBody + "- " + "<b>" + currentPO + "</b>" + ": ";
+                emailBody = emailBody + "- <b>" + currentPO + "</b>: ";
                 for(var k = 0; k < items[j].length; k++){
                   	var currentItem = items[j][k].toString();
                     if(k == (items[j].length - 1)){
@@ -131,16 +131,16 @@ define(['N/search', 'N/record', 'N/email'], function(search, record, email){
                 }
             }
             if(fullClosed.length > 0){          //execute if POs were fully closed/billed
-                emailBody = emailBody + "<br><b>The Following Purchase Orders Have Been Fully Closed/Billed:</b><br>";      //create html string of all the POs and items that were fully billed/closed
+                emailBody = emailBody + "<br><b>The Following Purchase Orders Have Been Fully Closed/Billed:</b><br>";
                 for(var m = 0; m < fullClosed.length; m++){
                     var fullClosedPO = fullClosed[m].toString();
-                    emailBody = emailBody + "- " + fullClosedPO + "<br>";
+                    emailBody = emailBody + "- <b>" + fullClosedPO + "</b><br>";
                 }
             }
         }
-      	email.send({                    //send the email
-            author: 2655,		        //internal ID of user
-            recipients: "fakeemail.com",
+      	email.send({            //send the email
+            author: 2690,		//internal ID of user
+            recipients: ["fakeemail"],
             subject: "Daily PO Close Update",
             body: emailBody
         });
